@@ -1,7 +1,12 @@
 function [R,h] = intcor(u,y)
-%if size(u)[1] > size(y)
 
-N = size(u,1);
+N = length(u);
+if length(y) <= N
+    y = [y;zeros(N-length(y),1)];
+else
+    N = length(y);
+    u = [u;zeros(N-length(u),1)];
+end
 
 R = [];
 h = [];
