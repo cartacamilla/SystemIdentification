@@ -1,5 +1,5 @@
 close all;
-clc;
+%clc;
 
 a = -0.4;
 b = -a;
@@ -14,7 +14,7 @@ simin.signals = struct('values', u);
 simin.time = linspace(0,N*Te, N);
 
 sim('ce1_1_sim')
-plot(simout)
+% plot(simout)
 
 U = toeplitz(u, zeros(N,1));
 Y = simout.Data;
@@ -25,4 +25,11 @@ Uk = U(:,1:k);
 theta = pinv(Uk)*Y;
 
 %theta = U\Y;
-plot(theta);
+plot(simin.time(1:k), theta);
+
+
+G = tf([4],[1 1 4]);
+Z = c2d(Te*G, Te, 'zoh');
+
+hold on;
+impulse(Z);
