@@ -1,28 +1,27 @@
 close all;
 %clc;
 
-a = -0.4;
-b = -a;
 Te = 0.2;
-sim_time = 100; % seconds
+sim_time = 70;
 N = sim_time/Te;
 
+% random input signal
+a = -0.4; % scaling to avoid saturation
+b = -a;
 u = a + (b-a).*rand(N,1);
 
+% simulation
 simin = struct();
 simin.signals = struct('values', u);
 simin.time = linspace(0,N*Te, N);
-
 sim('ce1_1_sim')
-% plot(simout)
 
-U = toeplitz(u, zeros(N,1));
-Y = simout.Data;
-
+% deconvolution
+U = toeplitz(u, [u(1);zeros(N-1,1)]);
 k = 300;
-Uk = U(:,1:k);
+Uk = U(:,1:k); % truncate U
 
-theta = pinv(Uk)*Y;
+theta = pinv(Uk)*simout;
 
 %theta = U\Y;
 plot(simin.time(1:k), theta);
