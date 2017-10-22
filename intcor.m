@@ -1,13 +1,8 @@
 function [R,h] = intcor(u,y)
+% intercorrelation function
+% supposes that u and y to be of same length
 
 N = length(u);
-if length(y) <= N
-    y = [y;zeros(N-length(y),1)];
-else
-    N = length(y);
-    u = [u;zeros(N-length(u),1)];
-end
-
 R = [];
 h = [];
 
