@@ -1,6 +1,8 @@
 close all;
 %clc;
 
+noiseVariance = 0;
+
 Te = 0.2;
 sim_time = 70;
 N = sim_time/Te;

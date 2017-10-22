@@ -14,6 +14,7 @@ sim('ce1_1_sim')
 N = length(Uprbs)/4;
 Uprbs = Uprbs(1:N);
 Y = simout(end+1-N:end);
+time = simin.time(1:N);
 
 % Correlation approach using intcor
 Ruu = intcor(Uprbs, Uprbs);
@@ -27,7 +28,17 @@ Ruu = xcorr(Uprbs, Uprbs);
 U = toeplitz(Ruu);
 theta_xcorr = pinv(U)*Ryu;
 
+G = Te*tf([4],[1 1 4], 'InputDelay', Te);
+Z = c2d(G, Te, 'zoh');
+[G_impulse, G_time] = impulse(Z, time(end));
+
+% 2-norm error
+err_intcor = norm(theta_intcor(1:127) - G_impulse);
+err_xcorr = norm(theta_xcorr(1:127) - G_impulse);
+
 close all;
 hold on;
-plot(theta_intcor);
-plot(theta_xcorr);
+plot(time, theta_intcor(1:N));
+plot(time, theta_xcorr(1:N));
+plot(G_time, G_impulse);
+
