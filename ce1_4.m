@@ -1,32 +1,33 @@
-close all;
-hold off;
-
 % input signal
 Uprbs = 0.5* prbs(7,4);
-
-% sample time
-Te = 0.2;
-
+Te = 0.2; % sample time
 N = length(Uprbs);
-sim_time = N*Te; % seconds
+sim_time = N*Te;
 
+% simulation
 simin = struct();
 simin.signals = struct('values', Uprbs);
 simin.time = linspace(0,sim_time, N);
-
 sim('ce1_1_sim')
-plot(simout)
 
+% extract one period of the signals
+N = length(Uprbs)/4;
+Uprbs = Uprbs(1:N);
+Y = simout(end+1-N:end);
+
+% Correlation approach using intcor
 Ruu = intcor(Uprbs, Uprbs);
-Ruu_x = xcorr(Uprbs, Uprbs);
-
-Y = simout;
-
 Ryu = intcor(Y, Uprbs);
-Ryu_x = xcorr(Y, Uprbs)
+U = toeplitz(Ruu);
+theta_intcor = pinv(U)*Ryu;
 
-U = toeplitz(Ruu(1:N,1));
+% Correlation approach using xcorr
+Ryu = xcorr(Y, Uprbs);
+Ruu = xcorr(Uprbs, Uprbs);
+U = toeplitz(Ruu);
+theta_xcorr = pinv(U)*Ryu;
 
-theta = pinv(U)*Ryu(3*N:length(Ryu),1);
-
-plot(theta)
+close all;
+hold on;
+plot(theta_intcor);
+plot(theta_xcorr);
