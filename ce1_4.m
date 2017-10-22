@@ -5,6 +5,7 @@ Uprbs = 0.5* prbs(7,4);
 Te = 0.2; % sample time
 N = length(Uprbs);
 sim_time = N*Te;
+saturation = 0.5;
 
 % simulation
 simin = struct();

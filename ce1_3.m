@@ -3,7 +3,7 @@ noiseVariance = 0.1;
 Te = 0.2;
 sim_time = 70;
 N = sim_time/Te;
-saturation = 0.4;
+saturation = 0.5;
 
 % random input signal
 a = -saturation; % scaling to avoid saturation
