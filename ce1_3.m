@@ -32,5 +32,5 @@ error = norm(H_impulse - theta)
 
 close all;
 hold on;
-plot(simin.time(1:k), theta);
+stairs(simin.time(1:k), theta);
 plot(H_time, H_impulse);

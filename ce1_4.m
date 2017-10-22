@@ -41,7 +41,7 @@ err_xcorr = norm(theta_xcorr(1:127) - G_impulse)
 
 close all;
 hold on;
-plot(time, theta_intcor(1:N));
-plot(time, theta_xcorr(1:N));
+stairs(time, theta_intcor(1:N));
+stairs(time, theta_xcorr(1:N));
 plot(G_time, G_impulse);
 
