@@ -1,3 +1,5 @@
+noiseVariance = 0.1;
+
 % input signal
 Uprbs = 0.5* prbs(7,4);
 Te = 0.2; % sample time
@@ -13,7 +15,7 @@ sim('ce1_1_sim')
 % extract one period of the signals
 N = length(Uprbs)/4;
 Uprbs = Uprbs(1:N);
-Y = simout(end+1-N:end);
+Y = simout(end+1-N:end)/Te;
 time = simin.time(1:N);
 
 % Correlation approach using intcor
@@ -28,13 +30,13 @@ Ruu = xcorr(Uprbs, Uprbs);
 U = toeplitz(Ruu);
 theta_xcorr = pinv(U)*Ryu;
 
-G = Te*tf([4],[1 1 4], 'InputDelay', Te);
+G = tf([4],[1 1 4], 'InputDelay', Te);
 Z = c2d(G, Te, 'zoh');
 [G_impulse, G_time] = impulse(Z, time(end));
 
-% 2-norm error
-err_intcor = norm(theta_intcor(1:127) - G_impulse);
-err_xcorr = norm(theta_xcorr(1:127) - G_impulse);
+% error
+err_intcor = norm(theta_intcor(1:127) - G_impulse)
+err_xcorr = norm(theta_xcorr(1:127) - G_impulse)
 
 close all;
 hold on;
