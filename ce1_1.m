@@ -37,7 +37,7 @@ sim('ce1_1_sim')
 figure
 stairs(simin.time(1:maxTime/Te), simout(1:maxTime/Te)/saturation); hold on;
 
-noiseVariance = 0.01;
+noiseVariance = 0.1;
 sim('ce1_1_sim')
 
 stairs(simin.time(1:maxTime/Te), simout(1:maxTime/Te)/saturation);hold on; 
@@ -67,7 +67,7 @@ sim('ce1_1_sim')
 figure
 stairs(simin.time(1:maxTime/Te), simout(1:maxTime/Te)/(saturation*Te)); hold on;
 
-noiseVariance = 0.01;
+noiseVariance = 0.1;
 sim('ce1_1_sim')
 
 stairs(simin.time(1:maxTime/Te), simout(1:maxTime/Te)/(saturation*Te));hold on; 
@@ -121,7 +121,7 @@ sim('ce1_1_sim')
 U = toeplitz(u, [u(1);zeros(N-1,1)]);
 Y = simout;
 
-k = 300;
+k = 60;
 Uk = U(:,1:k);
 
 theta = pinv(Uk)*Y;
@@ -130,11 +130,11 @@ theta = theta/Te;
 %theta = U\Y;
 
 figure
-stairs(simin.time(1:maxTime/Te), theta(1:maxTime/Te));hold on;
+stairs(simin.time(1:k), theta(1:k));hold on;
 G = tf([4],[1,1,4]);
 G_discrete = c2d(G, Te, 'zoh');
 [G_impulse, G_time] = impulse(G_discrete, sim_time-Te);
-plot(G_time(1:maxTime/Te), G_impulse(1:maxTime/Te)); 
+plot(G_time(1:k), G_impulse(1:k)); 
 
 
 title('Impulse Response using Numerical Deconvolution','Interpreter','latex')
