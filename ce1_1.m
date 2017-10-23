@@ -103,8 +103,9 @@ legend('PRBS with n = 5 and p = 4')
 
 close all;
 clc;
+maxTime = 12;
 
-noiseVariance = 0.01;
+noiseVariance = 0.1;
 a = -0.3;
 b = -a;
 sim_time = 100; % seconds
@@ -126,8 +127,6 @@ Uk = U(:,1:k);
 
 theta = pinv(Uk)*Y;
 theta = theta/Te;
-
-%theta = U\Y;
 
 figure
 stairs(simin.time(1:k), theta(1:k));hold on;
