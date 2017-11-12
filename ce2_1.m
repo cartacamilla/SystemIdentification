@@ -15,7 +15,6 @@ simin.signals = struct('values', u);
 simin.time = linspace(0,N*Te, N);
 sim('ce1_1_sim')
 
-%plot(simout)
 %% Fourier transform
 omega_s = 2*pi/Te;
 avg = zeros(PERIOD_LEN,1);
@@ -28,26 +27,28 @@ for i = 0:PERIOD_LEN-1
    freq = [freq; i*omega_s/127];
 end
 
-NYQUIST_INDEX = round(PERIOD_LEN/2);
-
 Y = avg / N_PERIODS;
-plot(freq(1:NYQUIST_INDEX), abs(Y(1:NYQUIST_INDEX)))
-
-figure
-U = fft(u(1:127));
-plot(freq(1:NYQUIST_INDEX), abs(U(1:NYQUIST_INDEX)))
+U = fft(u(1:PERIOD_LEN));
 %% Reconstruction
 
 Gr = Y ./ U;
 
+NYQUIST_INDEX = round(PERIOD_LEN/2);
 freq = freq(1:NYQUIST_INDEX);
 Gr = Gr(1:NYQUIST_INDEX);
-model = frd(Gr, freq, Te);
-bode(model)
 
-% compare with true system
-hold on
+model = frd(Gr, freq, Te);
+
+% true system
 G = tf([4],[1 1 4]);
 Z = c2d(G, Te, 'zoh');
+
+% plot
+figure
+hold on
+bode(model)
 bode(Z,freq)
+title('Bode Diagram: Fourier analysis')
 hold off
+printpdf(gcf, 'ce2_1_fourier_analysis.pdf');
+
