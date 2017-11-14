@@ -1,3 +1,4 @@
+SCALEOPT = 'biased';
 
 % simulation parameters
 saturation = 0.5;
@@ -8,7 +9,6 @@ u = 0.5*prbs(10,1);
 PERIOD_LEN = length(u);
 Te = 0.2; % sample time
 N = length(u);
-sim_time = N*Te;
 
 % simulation
 simin = struct();
@@ -23,8 +23,8 @@ Z = c2d(G, Te, 'zoh');
 
 
 %% Spectral analysis method
-Ryu = xcorr(y,u);
-Ruu = xcorr(u,u);
+Ryu = xcorr(y,u, SCALEOPT);
+Ruu = xcorr(u,u, SCALEOPT);
 
 Ryu = Ryu(N:end);
 Ruu = Ruu(N:end);
@@ -46,16 +46,9 @@ hann = @(M) 0.5+0.5*cos(pi*[0:M-1]'/(M-1));
 hamming = @(M) 0.54+0.46*cos(pi*[0:M-1]'/(M-1));
 
 padding = zeros(length(Ryu) - WINDOW_SIZE, 1);
-window = [hamming(WINDOW_SIZE); padding];
-Ryu_hamming = Ryu.*window;
-
-Gr = fft(Ryu_hamming)./fft(Ruu);
-Gr = Gr(1:NYQUIST_INDEX);
-model_hamming = frd(Gr, freq, Te);
-
 window = [hann(WINDOW_SIZE); padding];
 Ryu_hann = Ryu.*window;
-Gr = fft(Ryu_hamming)./fft(Ruu);
+Gr = fft(Ryu_hann)./fft(Ruu);
 Gr = Gr(1:NYQUIST_INDEX);
 model_hann = frd(Gr, freq, Te);
 
@@ -89,8 +82,8 @@ fft_Ruu = zeros(CHUNK_LEN,1);
 for i = 0:9
     yc = y(i*CHUNK_LEN + 1:(i+1)*CHUNK_LEN);
     uc = u(i*CHUNK_LEN + 1:(i+1)*CHUNK_LEN);
-    Ryu = xcorr(yc,uc);
-    Ruu = xcorr(uc,uc);
+    Ryu = xcorr(yc,uc, SCALEOPT);
+    Ruu = xcorr(uc,uc, SCALEOPT);
     
     Ryu = Ryu(CHUNK_LEN:end);
     Ruu = Ruu(CHUNK_LEN:end);
