@@ -9,6 +9,7 @@ u = 0.5*prbs(10,1);
 PERIOD_LEN = length(u);
 Te = 0.2; % sample time
 N = length(u);
+sim_time = N*Te;
 
 % simulation
 simin = struct();
