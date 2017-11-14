@@ -7,38 +7,24 @@ Te = 1e-3; % sampling time
 % we have a random non-periodic input signal u and the output y
 SCALEOPT = 'biased';
 
-Ryu = xcorr(y,u, SCALEOPT);
-Ruu = xcorr(u,u, SCALEOPT);
-
-N = length(u);
-Ryu = Ryu(N:end);
-Ruu = Ruu(N:end);
-
-Gr = fft(Ryu)./fft(Ruu);
-
-omega_s = 2*pi/Te;
-freq = 0:omega_s/N:(N-1)/N*omega_s;
-
-NYQUIST_INDEX = round(N/2);
-freq = freq(1:NYQUIST_INDEX);
-Gr = Gr(1:NYQUIST_INDEX);
-model = frd(Gr, freq, Te);
+model = spectral_analysis(y, u, Te, SCALEOPT);
 
 % Windowing
-WINDOW_SIZE = 40;
-
+WINDOW_SIZE = 50;
 hann = @(M) 0.5+0.5*cos(pi*[0:M-1]'/(M-1));
-padding = zeros(length(Ryu) - WINDOW_SIZE, 1);
-window = [hann(WINDOW_SIZE); padding];
-Ryu_hann = Ryu.*window;
-Gr = fft(Ryu_hann)./fft(Ruu);
-Gr = Gr(1:NYQUIST_INDEX);
-model_hann = frd(Gr, freq, Te);
+window = hann(WINDOW_SIZE);
+
+model_hann = spectral_analysis(y, u, Te, SCALEOPT, window);
+
+N_AVG = 4;
+model_avg = spectral_analysis_avg(y,u,Te,N_AVG,SCALEOPT);
+model_avg_hann = spectral_analysis_avg(y,u,Te,N_AVG,SCALEOPT, window);
 
 % Bode plot
 figure
 hold on
-bode(model)
+%bode(model)
+%bode(model_avg)
 bode(model_hann)
-legend('whole data','windowing')
+bode(model_avg_hann)
 hold off
