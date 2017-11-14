@@ -9,6 +9,8 @@ end
 if nargin < 6
     window = ones(N,1);
 end
+padding = zeros(N - length(window), 1);
+window = [window; padding];
 
 fft_Ryu = zeros(N,1);
 fft_Ruu = zeros(N,1);
@@ -16,7 +18,7 @@ for i = 0:N_AVG-1
     % split into chunks
     yc = y(i*N + 1:(i+1)*N);
     uc = u(i*N + 1:(i+1)*N);
-
+    
     % correlation
     Ryu = xcorr(yc,uc, SCALEOPT);
     Ruu = xcorr(uc,uc, SCALEOPT);
