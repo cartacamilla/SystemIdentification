@@ -19,7 +19,7 @@ sim('ce1_1_sim')
 omega_s = 2*pi/Te;
 avg = zeros(PERIOD_LEN,1);
 for i = 1:PERIOD_LEN:N
-    sig = simout(i:i+127-1);
+    sig = simout(i:i+PERIOD_LEN-1);
     avg = avg + fft(sig);
 end
 freq = [];
