@@ -1,7 +1,6 @@
 function model = spectral_analysis_avg(y,u,Te,N_AVG,SCALEOPT,window)
 
-N_TOT = length(u);
-N = floor(N_TOT/N_AVG);
+N = floor(length(u)/N_AVG);
 
 if nargin < 5
     SCALEOPT = 'biased';
@@ -18,17 +17,17 @@ for i = 0:N_AVG-1
     % split into chunks
     yc = y(i*N + 1:(i+1)*N);
     uc = u(i*N + 1:(i+1)*N);
-    
+
     % correlation
     Ryu = xcorr(yc,uc, SCALEOPT);
     Ruu = xcorr(uc,uc, SCALEOPT);
-    
+
     Ryu = Ryu(N:end);
     Ruu = Ruu(N:end);
-    
+
     % windowing
     Ryu = Ryu .* window;
-    
+
     % averaging
     fft_Ryu = fft_Ryu+fft(Ryu);
     fft_Ruu = fft_Ruu+fft(Ruu);
