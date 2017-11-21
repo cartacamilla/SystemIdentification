@@ -10,7 +10,7 @@ SCALEOPT = 'biased';
 model = spectral_analysis(y, u, Te, SCALEOPT);
 
 % Windowing
-WINDOW_SIZE = 50;
+WINDOW_SIZE = 100;
 hann = @(M) 0.5+0.5*cos(pi*[0:M-1]'/(M-1));
 window = hann(WINDOW_SIZE);
 
@@ -23,8 +23,7 @@ model_avg_hann = spectral_analysis_avg(y,u,Te,N_AVG,SCALEOPT, window);
 % Bode plot
 figure
 hold on
-%bode(model)
+bode(model)
 %bode(model_avg)
-bode(model_hann)
-bode(model_avg_hann)
+bode(model_hann, model_hann.Frequency)
 hold off
