@@ -11,7 +11,8 @@ Phi = toeplitz(u, [u(1);zeros(N-1,1)]);
 Phi = Phi(:,1:m);
 
 % least squares
-theta = pinv(Phi'*Phi)*Phi'*y;
+% theta = pinv(Phi'*Phi)*Phi'*y;
+theta = Phi\y;
 
 % reconstruct
 yhat = Phi*theta;
