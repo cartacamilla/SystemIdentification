@@ -26,8 +26,4 @@ U_orth = eye(N-r,N-r) - U'*pinv(U*U')*U;
 
 Q = Y*U_orth;
 
-n = svd(Q)
-
-Q_est = Q(:,1:n);
-
-C = Q_est(1,:)
+rank(Q)
