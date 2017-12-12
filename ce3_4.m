@@ -26,8 +26,19 @@ U_orth = eye(N-r,N-r) - U'*pinv(U*U')*U;
 
 Q = Y*U_orth;
 
-n = svd(Q)
+thres = 0.01;
+n = sum(svd(Q) > thres);
 
-Q_est = Q(:,1:n);
+Or = Q(1:r,1:n);
 
-C = Q_est(1,:)
+
+C = Or(1,:);
+
+A = pinv(Or(1:end-1,:))*Or(2:end,:);
+
+
+
+
+
+
+

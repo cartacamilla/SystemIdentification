@@ -10,7 +10,7 @@ Te = 1e-3; % sampling time
 
 %%
 N = length(y);
-r = 10; %au bol
+r = 100; %au bol
 
 Y = [];
 U = [];
@@ -26,4 +26,18 @@ U_orth = eye(N-r,N-r) - U'*pinv(U*U')*U;
 
 Q = Y*U_orth;
 
-rank(Q)
+thres = 0.01;
+n = sum(svd(Q) > thres);
+
+Or = Q(1:r,1:n);
+
+C = Or(1,:);
+
+A = 
+
+
+
+
+
+
+
