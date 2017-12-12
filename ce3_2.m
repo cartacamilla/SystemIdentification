@@ -24,7 +24,7 @@ plot(yhat);
 hold off
 
 % loss function
-J = sum((y - yhat).^2);
+J = sum((y - yhat).^2)
 
 
 % covariance of parameters theta
@@ -34,4 +34,5 @@ var_hat = J/(N-m);
 cov = var_hat*pinv(Phi'*Phi);
 two_sigma = 2*sqrt(diag(cov));
 
+figure
 errorbar(theta, two_sigma)
