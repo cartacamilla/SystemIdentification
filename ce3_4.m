@@ -10,7 +10,7 @@ Te = 1e-3; % sampling time
 
 %%
 N = length(y);
-r = 10; %au bol
+r = 9; %optimizes error
 
 Y = [];
 U = [];
@@ -31,14 +31,34 @@ n = sum(svd(Q) > thres);
 
 Or = Q(1:r,1:n);
 
-
 C = Or(1,:);
 
 A = pinv(Or(1:end-1,:))*Or(2:end,:);
 
+%%
 
+z = tf('z',Te);
 
+F = C*inv((z*eye(size(A)))-A);
 
+U_f = [];
 
+for k = 1:size(F,2)
+    U_f = [U_f lsim(F(k),u)];
+end
+
+%%
+theta = pinv(U_f'*U_f)*U_f'*y;
+
+y_hat = U_f*theta;
+
+J = sum((y-y_hat).^2)
+
+%%
+figure
+plot(y), hold on
+plot(y_hat)
+
+legend('real','approx')
 
 
