@@ -1,3 +1,7 @@
+close all 
+clc
+clear all
+
 laserbeamdata = load('laserbeamdataN.mat');
 y = laserbeamdata.y;
 u = laserbeamdata.u;

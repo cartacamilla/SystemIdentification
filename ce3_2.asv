@@ -20,9 +20,7 @@ theta = Phi\y
 figure
 stem(theta)
 xlabel('m')
-ylabel('Value')
 
-%%
 % reconstruct
 yhat = Phi*theta;
 
@@ -33,14 +31,9 @@ hold on
 plot(yhat);
 hold off
 
-xlabel('Time')
-ylabel('Value')
-legend('Real output','Reconstruction')
-
 % loss function
 J = sum((y - yhat).^2)
 
-%%
 
 % covariance of parameters theta
 
@@ -51,6 +44,3 @@ two_sigma = 2*sqrt(diag(cov));
 
 figure
 errorbar(theta, two_sigma)
-
-xlabel('Time')
-ylabel('Value')
