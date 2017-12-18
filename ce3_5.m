@@ -50,8 +50,8 @@ errorbar(SYS.b, SYS.db*2)
 %% Validation with ARMAX
 nc = 0; nd = 0; nf = 0; nk = 1;
 order_armax = 0;
-%figure
-for n =1:10
+figure
+for n =7:10
     orders = [n n n nk];
     SYS = armax(data_d, orders);
     %stem(n,SYS.Report.Fit.LossFcn), hold on
@@ -59,12 +59,17 @@ for n =1:10
     if(SYS.Report.Fit.LossFcn > thres)
         order_armax = order_armax + 1;
     end
+    subplot(2,2,n-6)
+    h = iopzplot(SYS);
+    title('n = '+string(n))
+    showConfidence(h,2)
 end
-order_armax
 
+%% Find order from zero/pole plot
+order_armax = 7
 %% estimate delay nk
 na = order_armax; nb = order_armax; nc = order_armax;
-SYS = armax(data_d, [na nb nc 1]);
+SYS = arx(data_d, [na nb 0]);
 lower = SYS.b - 2*SYS.db;
 upper = SYS.b + 2*SYS.db;
 test = lower.*upper <= 0; % test if 0 within 2 sigma
@@ -77,7 +82,10 @@ for i = test
     end
 end
 nk
+figure
 errorbar(SYS.b, SYS.db*2)
+ylabel('SYX.B')
+xlabel('nk')
 
 %% Plot Zero/Pole and their confidence interval
 figure
