@@ -64,3 +64,40 @@ title('State-space')
 
 printpdf(gcf, 'ce3_5_2_system_compare.pdf', 1, 1.5)
 
+%%
+
+figure
+S_arx = arx(data, [na nb nk]);
+subplot(3,1,1)
+resid(valid, S_arx)
+title('ARX')
+
+S_iv4 = iv4(data, [na nb nk]);
+subplot(3,1,2)
+resid(valid, S_iv4)
+title('Instrumental Variables')
+
+S_armax = armax(data, [na nb nc nk]);
+subplot(3,1,3)
+resid(valid, S_armax)
+title('ARMAX')
+printpdf(gcf, 'ce3_5_2_system_resid1.pdf', 1, 1.5)
+
+
+figure
+S_oe = oe(data, [nb nf nk]);
+subplot(3,1,1)
+resid(valid, S_oe)
+title('Output-Error')
+
+S_bj = bj(data, [nb nc nd nf nk]);
+subplot(3,1,2)
+resid(valid, S_bj)
+title('Box-Jenkins')
+
+S_n4sid = n4sid(data, nx);
+subplot(3,1,3)
+resid(valid, S_n4sid)
+title('State-space')
+
+printpdf(gcf, 'ce3_5_2_system_resid2.pdf', 1, 1.5)
