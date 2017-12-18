@@ -34,66 +34,63 @@ for n =1:10
     
     if(SYS.Report.Fit.LossFcn > thres)
         order_arx = order_arx + 1;
-        
-        % estimate delay nk
-        lower = SYS.b - 2*SYS.db;
-        upper = SYS.b + 2*SYS.db;
-        test = lower.*upper <= 0; % test if 0 within 2 sigma
-        nk = 0;
-        for i = test
-            if i == 0
-                break
-            else
-                nk = nk+1;
-            end
-        end
     end
 end
 order_arx
-nk
-%% Validation with ARMAX
 
-order_armax = 0;
 figure
+na = order_arx; nb = order_arx;
+SYS = arx(data_d, [na nb 1]);
+errorbar(SYS.b, SYS.db*4)
+
+%% Validation with ARMAX
+nc = 0; nd = 0; nf = 0; nk = 1;
+order_armax = 0;
+%figure
 for n =1:10
     orders = [n n n nk];
     SYS = armax(data_d, orders);
-    stem(n,SYS.Report.Fit.LossFcn), hold on
+    %stem(n,SYS.Report.Fit.LossFcn), hold on
     
     if(SYS.Report.Fit.LossFcn > thres)
         order_armax = order_armax + 1;
-
-        % estimate delay nk
-        lower = SYS.b - 2*SYS.db;
-        upper = SYS.b + 2*SYS.db;
-        test = lower.*upper <= 0; % test if 0 within 2 sigma
-        nk = 0;
-        for i = test
-            if i == 0
-                break
-            else
-                nk = nk+1;
-            end
-        end
     end
 end
 order_armax
+
+%% estimate delay nk
+na = order_armax; nb = order_armax; nc = order_armax;
+SYS = armax(data_d, [na nb nc 1]);
+lower = SYS.b - 2*SYS.db;
+upper = SYS.b + 2*SYS.db;
+test = lower.*upper <= 0; % test if 0 within 2 sigma
+nk = 0;
+for i = test
+    if i == 0
+        break
+    else
+        nk = nk+1;
+    end
+end
+nk
+errorbar(SYS.b, SYS.db*4)
 
 %% Plot Zero/Pole and their confidence interval
 figure
 h = iopzplot(SYS)
 showConfidence(h,2)
 
+%% Compare
+NN = struc(1:10,1:10,0:10);
+V=arxstruc(data,data,NN);
+[NN, Vm] = selstruc(V, 'PLOT')
+
+
 %% Divide data
 N1 = N/2;
 
 data = iddata(y(1:N1),u(1:N1),Te);
 valid = iddata(y(N1+1:end),u(N1+1:end),Te);
-
-%% Compare
-NN = struc(1:10,1:10,1)
-V=arxstruc(data,valid,NN)
-selstruc(V, 0)
 
 
 
