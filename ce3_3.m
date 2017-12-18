@@ -26,10 +26,26 @@ d=0;
 Phi = toeplitz([0;-y(1:N-1)], [0; 0]);
 Phi = [Phi, toeplitz([0;u(1:N-1)], [0; 0])];
 % theta_hat = inv(Phi'*Phi)*Phi'*y;
-theta_hat = Phi\y;
+theta_hat = Phi\y
+
+
+%%
 
 % reconstruct
 yhat = Phi*theta_hat;
+
+% compare
+x_ax = Te*[1:length(yhat)];
+
+figure
+plot(x_ax,y);
+hold on
+plot(x_ax,yhat);
+hold off
+
+xlabel('Time[s]')
+ylabel('Amplitude')
+legend('Real output','ARX output')
 
 % loss function
 J_pred = sum((y - yhat).^2) %Predicition error
@@ -45,11 +61,11 @@ ARX_model = tf(B, A, Te);
 yARX = lsim(ARX_model,u);
 
 % compare
-plot(y,'b');
+plot(x_ax,y,'b');
 hold on
 % plot(yhat,'r');
 hold on
-plot(yARX,'r')
+plot(x_ax,yARX,'r')
 hold on
 %% Instrumental Variable method
 yM = yARX;

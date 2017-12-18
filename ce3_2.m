@@ -26,15 +26,16 @@ ylabel('Value')
 % reconstruct
 yhat = Phi*theta;
 
+x_ax = Te*[1:length(yhat)];
 % compare
 figure
-plot(y);
+plot(x_ax,y);
 hold on
-plot(yhat);
+plot(x_ax,yhat);
 hold off
 
-xlabel('Time')
-ylabel('Value')
+xlabel('Time[s]')
+ylabel('Amplitude')
 legend('Real output','Reconstruction')
 
 % loss function
