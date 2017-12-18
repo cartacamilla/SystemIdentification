@@ -80,17 +80,18 @@ figure
 h = iopzplot(SYS)
 showConfidence(h,2)
 
-%% Compare
-NN = struc(1:10,1:10,0:10);
-V=arxstruc(data,data,NN);
-[NN, Vm] = selstruc(V, 'PLOT')
-
-
 %% Divide data
 N1 = N/2;
 
 data = iddata(y(1:N1),u(1:N1),Te);
 valid = iddata(y(N1+1:end),u(N1+1:end),Te);
+
+%% Compare
+
+NN = struc(1:10,1:10,0:10);
+V=arxstruc(data,valid,NN);
+[NN, Vm] = selstruc(V, 'PLOT');
+NN
 
 
 
