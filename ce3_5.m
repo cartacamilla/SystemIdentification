@@ -41,7 +41,7 @@ order_arx
 figure
 na = order_arx; nb = order_arx;
 SYS = arx(data_d, [na nb 1]);
-errorbar(SYS.b, SYS.db*4)
+errorbar(SYS.b, SYS.db*2)
 
 %% Validation with ARMAX
 nc = 0; nd = 0; nf = 0; nk = 1;
@@ -73,7 +73,7 @@ for i = test
     end
 end
 nk
-errorbar(SYS.b, SYS.db*4)
+errorbar(SYS.b, SYS.db*2)
 
 %% Plot Zero/Pole and their confidence interval
 figure
