@@ -52,13 +52,14 @@ for n =1:8
         order_armax = order_armax + 1;
     end
     
+    h = figure
+    iopzplot(SYS)
+    saveas(h, 'CE3-report/images/'+int2str(n), 'png');
+
 end
 order_armax
 
-%% Plot Zero/Pole and their confidence interval
-figure
-h = iopzplot(SYS)
-showConfidence(h,2)
+
 
 
 
