@@ -18,7 +18,7 @@ data = iddata(y,u,Te);
 
 [data_d,T] = detrend(data);
 
-plot(data,data_d)
+%plot(data,data_d)
 
 
 %% Order estimation with ARX
@@ -27,6 +27,10 @@ thres = 0.002;
 order_arx = 0;
 
 figure
+plot([0 10], [thres, thres], 'r')
+ylabel('Loss Function')
+xlabel('order n')
+hold on
 for n =1:10
     orders = [n n nk];
     SYS = arx(data_d, orders);
