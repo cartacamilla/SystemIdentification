@@ -39,7 +39,7 @@ ylabel('Amplitude')
 legend('Real output','Reconstruction')
 
 % loss function
-J = sum((y - yhat).^2)
+J = sum((y - yhat).^2)/N
 
 %%
 

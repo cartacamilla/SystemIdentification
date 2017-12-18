@@ -48,7 +48,7 @@ ylabel('Amplitude')
 legend('Real output','ARX Prediction')
 
 % loss function
-J_pred = sum((y - yhat).^2) %Predicition error
+J_pred = sum((y - yhat).^2)/N 
 
 
 
@@ -87,7 +87,19 @@ theta_hat_iv = pinv(Phi_iv'*Phi)*Phi_iv'*y;
 % reconstruct
 yhat_iv = Phi_iv*theta_hat_iv;
 
-J_pred_iv = sum((y-yhat_iv).^2) % error
+x_ax = Te*[1:length(yhat)];
+
+figure
+plot(x_ax,y);
+hold on
+plot(x_ax,yhat_iv);
+hold off
+
+xlabel('Time[s]')
+ylabel('Amplitude')
+legend('Real output','IV Prediction')
+
+J_pred_iv = sum((y-yhat_iv).^2)/N 
 
 %% lsim
 % G = z^-d*B(z^-1)/A(z^-1)
@@ -96,6 +108,21 @@ B_iv = [theta_hat_iv(n+1:end)'];
 IV_model = tf(B_iv, A_iv, Te);
 
 yIV = lsim(IV_model,u);
+
+% compare
+figure
+plot(x_ax,y,'b');
+hold on
+% plot(yhat,'r');
+hold on
+plot(x_ax,yIV,'r')
+
+xlabel('Time[s]')
+ylabel('Amplitude')
+legend('Real output','ym for IV model')
+
+norm2_iv = norm(yIV - y, 2);
+fprintf('Norm-2 of the error: %E\n', norm2_iv);
 
 %% compare
 plot(yIV,'g'); 

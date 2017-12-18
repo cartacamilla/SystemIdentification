@@ -27,7 +27,12 @@ U_orth = eye(N-r,N-r) - U'*pinv(U*U')*U;
 Q = Y*U_orth;
 
 thres = 0.01;
-n = sum(svd(Q) > thres);
+n = sum(svd(Q) > thres)
+
+figure 
+plot(svd(Q))
+xlabel('Order')
+ylabel('Value')
 
 Or = Q(1:r,1:n);
 
@@ -50,14 +55,15 @@ end
 %%
 theta = pinv(U_f'*U_f)*U_f'*y;
 
-y_hat = U_f*theta;
+yhat = U_f*theta;
 
-J = sum((y-y_hat).^2)
+%loss function
+J = sum((y-yhat).^2)/N
 
 %%
 figure
 plot(y), hold on
-plot(y_hat)
+plot(yhat)
 
 legend('real','approx')
 
