@@ -84,8 +84,9 @@ end
 nk
 figure
 errorbar(SYS.b, SYS.db*2)
-ylabel('SYX.B')
-xlabel('nk')
+grid on
+ylabel('b_i')
+xlabel('i')
 
 %% Plot Zero/Pole and their confidence interval
 figure
