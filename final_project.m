@@ -26,17 +26,16 @@ theta = pinv(Uk)*y/Te;
 plot(theta)
 hold off
 
-%% Initialisation
+%% spectral and fourier analyis
 u = FPdata.u;
 y = FPdata.y;
 N = length(y);
 data = iddata(y,u,Te);
 
-%% spectral analysis
 model = spectral_analysis(y,u,Te,'biased',hamming(10));
 bode(model)
 
-%% fourier analyis
+%%% fourier analyis
 N_PERIODS = 6;
 PERIOD_LEN = N/N_PERIODS;
 omega_s = 2*pi/Te;
@@ -61,5 +60,16 @@ freq = freq(1:NYQUIST_INDEX);
 Gr = Gr(1:NYQUIST_INDEX);
 
 model = frd(Gr, freq, Te);
-hold on
+figure
 bode(model)
+
+% we see 2 resonance frequencies at 114 rad/s and 216 rad/s
+
+%% parametric identification
+
+u = FPdata.u;
+y = FPdata.y;
+N = length(y);
+
+data = iddata(y(1:N/2),u(1:N/2),Te);
+valid = iddata(y(N/2+1:end),u(N/2+1:end),Te);
