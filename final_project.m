@@ -17,6 +17,7 @@ theta = pinv(U'*U)*U'*Ryr(N:N+k);
 
 figure
 plot(1/Te*theta)
+title('impulse response')
 hold on
 
 % deconvolution
@@ -24,9 +25,10 @@ U = toeplitz(u, [u(1);zeros(N-1,1)]);
 Uk = U(:,1:k); % truncate U
 theta = pinv(Uk)*y/Te;
 plot(theta)
+legend('correlation','deconvolution')
 hold off
 
-%% spectral and fourier analyis
+%% spectral analyis
 u = FPdata.u;
 y = FPdata.y;
 r = FPdata.r;
@@ -77,8 +79,9 @@ freq = freq(1:NYQUIST_INDEX);
 model = frd(Gr, freq, Te);
 figure
 bode(model)
+title('spectral analysis')
 
-%% fourier analyis
+%%% fourier analyis
 u = FPdata.u;
 y = FPdata.y;
 
@@ -87,18 +90,20 @@ N_PERIODS = 6;
 PERIOD_LEN = N/N_PERIODS;
 omega_s = 2*pi/Te;
 avg_y = zeros(PERIOD_LEN,1);
-% todo avg_u
+avg_u = zeros(PERIOD_LEN,1);
 for i = 1:PERIOD_LEN:N
-    sig = y(i:i+PERIOD_LEN-1);
-    avg_y = avg_y + fft(sig);
+    in = y(i:i+PERIOD_LEN-1);
+    avg_y = avg_y + fft(in);
+    out = u(i:i+PERIOD_LEN-1);
+    avg_u = avg_u + fft(out);
 end
 freq = [];
 for i = 0:PERIOD_LEN-1
-   freq = [freq; i*omega_s/127];
+   freq = [freq; i*omega_s/PERIOD_LEN];
 end
 
 Y = avg_y / N_PERIODS;
-U = fft(u(1:PERIOD_LEN));
+U = avg_u / N_PERIODS;
 
 % Reconstruction
 Gr = Y ./ U;
@@ -108,10 +113,15 @@ freq = freq(1:NYQUIST_INDEX);
 Gr = Gr(1:NYQUIST_INDEX);
 
 model = frd(Gr, freq, Te);
-figure
+%figure
+hold on
 bode(model)
+%title('fourier analysis')
+title('frequency analysis')
+legend('spectral analysis', 'fourier analysis')
+hold off
 
-% we see 2 resonance frequencies at 114 rad/s and 216 rad/s
+% we see 2 resonance frequencies at 14.1 rad/s and 26.6 rad/s
 
 %% parametric identification
 
