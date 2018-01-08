@@ -33,12 +33,12 @@ u = FPdata.u;
 y = FPdata.y;
 r = FPdata.r;
 
-N_AVG = 6;
+N_AVG = 1;
 N = floor(length(u)/N_AVG);
 
 SCALEOPT = 'biased';
 window = ones(N,1);
-window = hann(200);
+%window = hann(200);
 window = window(length(window)/2 +1:end);
 padding = zeros(N - length(window), 1);
 window = [window; padding];
@@ -71,6 +71,7 @@ Gr = fft_Ryr./fft_Rur;
 
 omega_s = 2*pi/Te;
 freq = 0:omega_s/N:(N-1)/N*omega_s;
+freq = (0:N-1).*(omega_s/N);
 
 NYQUIST_INDEX = round(N/2);
 Gr = Gr(1:NYQUIST_INDEX);
@@ -85,22 +86,22 @@ title('spectral analysis')
 u = FPdata.u;
 y = FPdata.y;
 
-N = length(FPdata.u);
 N_PERIODS = 6;
-PERIOD_LEN = N/N_PERIODS;
+N = length(FPdata.u)/N_PERIODS;
 omega_s = 2*pi/Te;
-avg_y = zeros(PERIOD_LEN,1);
-avg_u = zeros(PERIOD_LEN,1);
-for i = 1:PERIOD_LEN:N
-    in = y(i:i+PERIOD_LEN-1);
+avg_y = zeros(N,1);
+avg_u = zeros(N,1);
+for i = 1:N:N*N_PERIODS
+    in = y(i:i+N-1);
     avg_y = avg_y + fft(in);
-    out = u(i:i+PERIOD_LEN-1);
+    out = u(i:i+N-1);
     avg_u = avg_u + fft(out);
 end
 freq = [];
-for i = 0:PERIOD_LEN-1
-   freq = [freq; i*omega_s/PERIOD_LEN];
+for i = 0:N-1
+   freq = [freq; i*omega_s/N];
 end
+freq = (0:N-1).*(omega_s/N);
 
 Y = avg_y / N_PERIODS;
 U = avg_u / N_PERIODS;
@@ -108,7 +109,7 @@ U = avg_u / N_PERIODS;
 % Reconstruction
 Gr = Y ./ U;
 
-NYQUIST_INDEX = round(PERIOD_LEN/2);
+NYQUIST_INDEX = round(N/2);
 freq = freq(1:NYQUIST_INDEX);
 Gr = Gr(1:NYQUIST_INDEX);
 
@@ -122,6 +123,76 @@ legend('spectral analysis', 'fourier analysis')
 hold off
 
 % we see 2 resonance frequencies at 14.1 rad/s and 26.6 rad/s
+%% Analysis of physical system
+syms x1 x2 x3 J1 J2 J3 k1 k2 k3 T s
+A=[
+    (J1*s^2+k1), -k1, 0;
+    -k1, (J2*s^2+k1+k2), -k2;
+    0, -k2, (J3*s^2+k2)
+];
+B=[T;0;0];
+x=[x1;x2;x3];
+res = solve(A*x-B, x);
+G = res.x3/T;
+factor(G)
+% G has the structure K * 1/s^2 * 1/((s/w1)^2+1) * 1/((s/w2)^2+1);
+J1 = 1; J2 = 1; J3 = 1; k1 = 1; k2 = 1; K3 = 1;
+[n,d] = numden(G);
+n = sym2poly(subs(n));
+d = sym2poly(subs(d));
+G = tf(n,d);
+%bode(G)
+
+w1 = 14.1;
+w2 = 26.6;
+s = tf('s');
+G = 1/s^2 * 1/(((s/w1)^2+1)*((s/w2)^2+1));
+%G = G * abs(freqresp(model, 4)) / abs(freqresp(G, 4))
+hold on;
+bode(G, freq)
+hold off;
+%% state space model
+syms x1 x2 x3 dx1 dx2 dx3 J1 J2 J3 k1 k2 k3 km u
+A=[zeros(3), eye(3);
+    [
+        -k1/J1, k1/J1, 0;
+        k1/J2, -(k1+k2)/J2, k2/J2;
+        0, k2/J3, -k2/J3
+    ], zeros(3)
+];
+B = [km; zeros(5,1)];
+x = [x1; x2; x3; dx1; dx2; dx3];
+%% spectral analyis without averaging
+u = FPdata.u;
+y = FPdata.y;
+r = FPdata.r;
+N = length(u);
+omega_s = 2*pi/Te;
+
+SCALEOPT = 'biased';
+window = ones(N,1);
+window = hann(200);
+window = window(length(window)/2 +1:end);
+padding = zeros(N - length(window), 1);
+window = [window; padding];
+
+% correlation
+Ryr = xcorr(y,r, SCALEOPT);
+Rur = xcorr(u,r, SCALEOPT);
+Ryr = Ryr(N:end);
+Rur = Rur(N:end);
+% windowing
+Ryr = Ryr .* window;
+% averaging
+fft_Ryr = fft(Ryr);
+fft_Rur = fft(Rur);
+% Reconstruction
+Gr = fft_Ryr./fft_Rur;
+freq = (0:N-1).*(omega_s/N);
+model = frd(Gr, freq, Te);
+figure
+bode(model)
+title('spectral analysis')
 
 %% parametric identification
 
