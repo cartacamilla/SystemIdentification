@@ -5,13 +5,17 @@ clc
 FPdata = load('FPdata.mat');
 Te =  0.04;
 
+% Windowing
+hann_window = @(M) 0.5+0.5*cos(pi*[0:M-1]'/(M-1));
+
+
 %% Impulse response using correlation and deconvolution approach
 N = length(FPdata.u)/6;
-k=250;
+k=400;
 u = FPdata.u(end-N+1:end);
 y = FPdata.y(end-N+1:end);
-Rur = intcor(u, u); % use incor because u periodic
-Ryr = intcor(y, u);
+Rur = xcorr(u, u, 'unbiased'); % use incor because u periodic
+Ryr = xcorr(y, u, 'unbiased');
 U = toeplitz(Rur(N:N+k));
 theta = pinv(U'*U)*U'*Ryr(N:N+k);
 
@@ -26,6 +30,12 @@ Uk = U(:,1:k); % truncate U
 theta = pinv(Uk)*y/Te;
 plot(theta)
 legend('correlation','deconvolution')
+hold off
+
+hold on;
+
+window = hann_window(250);
+plot(window)
 hold off
 
 %% spectral analyis
@@ -134,20 +144,21 @@ B=[T;0;0];
 x=[x1;x2;x3];
 res = solve(A*x-B, x);
 G = res.x3/T;
-factor(G)
+
 % G has the structure K * 1/s^2 * 1/((s/w1)^2+1) * 1/((s/w2)^2+1);
-J1 = 1; J2 = 1; J3 = 1; k1 = 1; k2 = 1; K3 = 1;
-[n,d] = numden(G);
-n = sym2poly(subs(n));
-d = sym2poly(subs(d));
-G = tf(n,d);
+% J1 = 1; J2 = 1; J3 = 1; k1 = 1; k2 = 1; K3 = 1;
+% [n,d] = numden(G);
+% n = sym2poly(subs(n));
+% d = sym2poly(subs(d));
+% G = tf(n,d);
 %bode(G)
 
+%%
 w1 = 14.1;
 w2 = 26.6;
+k = 10;
 s = tf('s');
-G = 1/s^2 * 1/(((s/w1)^2+1)*((s/w2)^2+1));
-%G = G * abs(freqresp(model, 4)) / abs(freqresp(G, 4))
+G = k * 1/s^2 * 1/(((s/w1)^2+1)*((s/w2)^2+1));
 hold on;
 bode(G, freq)
 hold off;
@@ -160,7 +171,9 @@ A=[zeros(3), eye(3);
         0, k2/J3, -k2/J3
     ], zeros(3)
 ];
-B = [km; zeros(5,1)];
+B = [0 0 0 km 0 0]';
+C = [0 0 1 0 0 0];
+D = zeros(1,1);
 x = [x1; x2; x3; dx1; dx2; dx3];
 %% spectral analyis without averaging
 u = FPdata.u;
@@ -193,13 +206,3 @@ model = frd(Gr, freq, Te);
 figure
 bode(model)
 title('spectral analysis')
-
-%% parametric identification
-
-u = FPdata.u;
-y = FPdata.y;
-r = FPdata.r;
-N = length(y);
-
-data = iddata(y(1:N/2),u(1:N/2),Te);
-valid = iddata(y(N/2+1:end),u(N/2+1:end),Te);
