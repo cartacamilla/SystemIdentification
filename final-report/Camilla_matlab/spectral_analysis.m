@@ -12,7 +12,7 @@ end
 
 size_split = floor(N/m);
 
-M = 2*size_split;
+M = 550;
 
 switch window_type
     case 'hann'
@@ -59,5 +59,5 @@ bode(model,w_n);
 
 title('Bode diagram')
 legend('Identified model - Spectral analysis with averaging and windowing')
-saveas(h3, 'final-report/images/1_Spectral_analysis', 'png');
+saveas(h3, '../images/1_Spectral_analysis', 'png');
 
