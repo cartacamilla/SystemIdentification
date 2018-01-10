@@ -10,6 +10,12 @@ test_data = iddata(y(test),u(test),Te);
 train_data = detrend(train_data);
 test_data = detrend(test_data);
 
+G_est = spa(test_data);
+
+s = tf('s');
+
+G_phys = 1/s^2*(1/((s^2/14.1^2+1)*(s^2/26.6^2+1)));
+
 nc = na; nd = na; nf = na; nx = max(nb + nk, na);
 
 figure
@@ -44,7 +50,16 @@ compare(test_data, S_n4sid)
 title('State-space')
 
 
-printpdf(gcf, 'final-report/images/system_compare.pdf', 1, 1.8)
+printpdf(gcf, '../images/system_compare.pdf', 1, 1.8)
+
+figure
+
+w_s = 2*pi/Te;
+w_nyquist = w_s/2;
+w_n = w_nyquist*(0:(N/2-1))/N/2;
+
+phys_model = idfrd(G_phys, w_n, 'Hz' );
+compare(phys_model, S_arx, S_armax, S_oe, S_bj, S_n4sid)
 
 %%
 
@@ -64,7 +79,7 @@ subplot(3,1,3)
 resid(test_data, S_armax)
 title('ARMAX')
 
-printpdf(gcf, 'final-report/images/system_resid1.pdf', 1, 1.8)
+printpdf(gcf, '../images/system_resid1.pdf', 1, 1.8)
 
 
 figure
@@ -83,7 +98,7 @@ subplot(3,1,3)
 resid(test_data, S_n4sid)
 title('State-space')
 
-printpdf(gcf, 'final-report/images/system_resid2.pdf', 1, 1.8)
+printpdf(gcf, '../images/system_resid2.pdf', 1, 1.8)
 
 
 

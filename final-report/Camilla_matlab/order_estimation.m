@@ -2,11 +2,9 @@ function order_estimation(y,u,Te,freq_response)
 
 N = length(u);
 
-data = iddata(y(1:N/2),u(1:N/2),Te);
-valid = iddata(y(N/2+1:end),u(N/2+1:end),Te);
+data = iddata(y,u,Te);
 
 data = detrend(data);
-valid = detrend(valid);
 
 %% Loss function method
 nb_order = 25;
@@ -36,7 +34,7 @@ ylabel('Loss function value'); xlabel('Model order');
 legend('Loss Function', 'Penalty term BIC', 'Global criterion');
 axis([1 nb_order 0 2e-4]);
 
-saveas(fig1, 'final-report/images/1_loss_funct_order', 'png');
+saveas(fig1, '../images/1_loss_funct_order', 'png');
 
 
 %% Zero/pôle cancellation method using ARMAX
@@ -49,11 +47,11 @@ for n = 1:nb_order
     
     SYS = armax(data, orders);
     
-    fig = figure(n)
-    h = iopzplot(SYS);
+    fig = figure(n);
+    h = iopzplot(SYS)
     title('n = '+string(n))
     showConfidence(h,2)
-    saveas(fig, sprintf('final-report/images/1_zpc_%d',n), 'png');
+    saveas(fig, sprintf('../images/1_zpc_%d',n), 'png');
 
 end
 hold off;
@@ -64,11 +62,10 @@ na_est = 6
 
 
 %% Estimation delay
-
 n = na_est;
-na = 1; nb = n; nc = n; 
+na = 0; nb = n; 
 
-SYS = arx(data,[na nb  1])
+SYS = arx(data,[na nb 0])
 
 lower = SYS.b + 2 * SYS.db;
 higher = SYS.b - 2 * SYS.db;
@@ -79,7 +76,7 @@ errorbar(SYS.b, SYS.db*2)
 title('Estimation delay ');
 ylabel('B coefficient value'); xlabel('Coefficient order');
 
-saveas(fig3, 'final-report/images/1_est_delay_order', 'png');
+saveas(fig3, '../images/1_est_delay_order', 'png');
 
 nk_est = 0;
 for i = 1:length(SYS.b)
@@ -121,7 +118,7 @@ ylabel('Loss function value'); xlabel('Model order');
 legend('Loss Function', 'Penalty term BIC', 'Global criterion');
 axis([1 nb_order 0 1e-5]);
 
-saveas(fig4, 'final-report/images/2_loss_funct_order', 'png');
+saveas(fig4, '../images/2_loss_funct_order', 'png');
 
 %% Zero/pôle cancellation method for nb
 nb_order = nb_est+5;
@@ -133,17 +130,17 @@ for n = 1:nb_order
     
     SYS = armax(data, orders);
     
-    fig = figure(n)
-    h = iopzplot(SYS);
-    title('n = '+string(n))
-    showConfidence(h,2)
-    %saveas(fig, sprintf('final-report/images/2_zpc_%d',n), 'png');
+%     fig = figure(n)
+%     h = iopzplot(SYS);
+%     title('n = '+string(n))
+%     showConfidence(h,2)
+    %saveas(fig, sprintf('../images/2_zpc_%d',n), 'png');
 
 end
 hold off;
 
 %% Matlab structure
-na = 5:6; nb = 1:4; nk = 1:3;
+na = 5:6; nb = 1:7; nk = 0:4;
 
 M_SYS = struc(na, nb, nk);
 
@@ -162,6 +159,6 @@ hold off;
 
 legend('Identified model using ARMAX', 'Location','southwest');
 
-saveas(fig5, 'final-report/images/1_freq_resp_order', 'png');
+saveas(fig5, '../images/1_freq_resp_order', 'png');
 
 end

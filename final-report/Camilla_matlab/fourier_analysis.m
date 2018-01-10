@@ -52,7 +52,7 @@ bode(model, w_n)
 
 title('Bode Diagram');
 legend('Identified model - Fourier analysis with averaging');
-saveas(h1, 'final-report/images/1_Fourier_analysis', 'png');
+saveas(h1, '../images/1_Fourier_analysis', 'png');
 
 h2 = figure(2);
 
@@ -68,7 +68,7 @@ bode(Y1_model,U1_model, w_n);
 
 title('Bode Diagram');
 legend('Fft of output y', 'Fft of input u');
-saveas(h2, 'final-report/images/2_Fourier_analysis', 'png');
+saveas(h2, '../images/2_Fourier_analysis', 'png');
 
 
 
