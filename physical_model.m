@@ -11,6 +11,7 @@ bode(spectral_analysis_model); hold on;
 bode(G, freq); hold off;
 %% ... model with lowpass instead of doule integrator
 wc = 1.71;
+k = 3.16;
 G = k * 1/(s/wc + 1)^2 * 1/(((s/w1)^2+1)*((s/w2)^2+1));
 %c2d(G, Te)
 figure
