@@ -89,6 +89,7 @@ for n=order
     axis([-1.2 3 -2 2])
 end
 printpdf(gcf, 'final-report/images/3_zero_pole_cancel.pdf', 1.5, 1.8)
+
 %% compare with selstruc
 %NN = struc(5:7,5:7,0:4);
 %V = arxstruc(estim_data, valid_data, NN);

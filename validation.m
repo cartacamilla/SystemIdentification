@@ -70,7 +70,7 @@ for i = 1:length(models)
     compare(spectral_analysis_model, models(i).sys)
     title(models(i).name)
 end
-printpdf(gcf, 'final-report/images/4_freq_domain_valid.pdf', 1, 1.8)
+printpdf(gcf, 'final-report/images/4_freq_domain_valid.pdf', 1.2, 2.4)
 %% Frequency-domain compare
 fitval = [];
 names = {};
