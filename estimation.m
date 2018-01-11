@@ -4,7 +4,7 @@ r = FPdata.r;
 N = length(y);
 
 data = detrend(iddata(y,u,Te));
-estim_data = detrend(iddata(y(1:N/2),u(1:N/2),Te));
+valid_data = detrend(iddata(y(1:N/2),u(1:N/2),Te));
 valid_data = detrend(iddata(y(N/2+1:end),u(N/2+1:end),Te));
 
 % ARX models for different orders n
@@ -92,6 +92,6 @@ printpdf(gcf, 'final-report/images/3_zero_pole_cancel.pdf', 1.5, 1.8)
 
 %% compare with selstruc
 %NN = struc(5:7,5:7,0:4);
-%V = arxstruc(estim_data, valid_data, NN);
+%V = arxstruc(valid_data, valid_data, NN);
 %order = selstruc(V)
 

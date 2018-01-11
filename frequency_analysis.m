@@ -71,7 +71,7 @@ Gr = Gr(1:NYQUIST_INDEX);
 freq = freq(1:NYQUIST_INDEX);
 
 spectral_analysis_model = frd(Gr, freq, Te);
-figure
+%figure
 hold on;
 bode(spectral_analysis_model); hold off;
 title('spectral analysis')
@@ -108,7 +108,7 @@ freq = freq(1:NYQUIST_INDEX);
 Gr = Gr(1:NYQUIST_INDEX);
 
 fourier_analysis_model = frd(Gr, freq, Te);
-%figure
+figure
 hold on
 bode(fourier_analysis_model)
 %title('fourier analysis')

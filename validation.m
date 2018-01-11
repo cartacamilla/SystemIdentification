@@ -1,27 +1,27 @@
 u = FPdata.u;
 y = FPdata.y;
 N = length(y);
-estim_data = detrend(iddata(y(1:N/2),u(1:N/2),Te));
+train_data = detrend(iddata(y(1:N/2),u(1:N/2),Te));
 valid_data = detrend(iddata(y(N/2+1:end),u(N/2+1:end),Te));
 
 n = max(na_est, nb_est)
 na = n;
 nb = n;
 nk = nk_est;
-nc = n; nd = n; nf = n; nx = max(na, nb+nk);
+nc = n; nd = n; nf = n; nx = n;
 
 models = struct('sys',{},'name',{});
-models(1).sys = arx(estim_data, [na nb nk]);
+models(1).sys = arx(train_data, [na nb nk]);
 models(1).name = 'ARX';
-models(2).sys = iv4(estim_data, [na nb nk]);
+models(2).sys = iv4(train_data, [na nb nk]);
 models(2).name = 'Instrumental Variables';
-models(3).sys = armax(estim_data, [na nb nc nk]);
+models(3).sys = armax(train_data, [na nb nc nk]);
 models(3).name = 'ARMAX';
-models(4).sys = oe(estim_data, [nb nf nk]);
+models(4).sys = oe(train_data, [nb nf nk]);
 models(4).name = 'Output-Error';
-models(5).sys = bj(estim_data, [nb nc nd nf nk]);
+models(5).sys = bj(train_data, [nb nc nd nf nk]);
 models(5).name = 'Box-Jenkins';
-models(6).sys = n4sid(estim_data, nx);
+models(6).sys = n4sid(train_data, nx);
 models(6).name = 'State-space';
 
 %% Time domain validation
