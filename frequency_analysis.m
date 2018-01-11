@@ -5,13 +5,13 @@ hann_window = @(M) 0.5+0.5*cos(pi*[0:M-1]'/(M-1));
 
 %% Impulse response using correlation and deconvolution approach
 N = length(FPdata.u)/6;
-k=400;
+k=400; % max length
 u = FPdata.u(end-N+1:end);
 y = FPdata.y(end-N+1:end);
-Rur = intcor(u, u); % use intcor because u periodic
-Ryr = intcor(y, u);
-U = toeplitz(Rur(N:N+k));
-theta = pinv(U'*U)*U'*Ryr(N:N+k);
+Ruu = intcor(u, u); % use intcor because u periodic
+Ryu = intcor(y, u);
+U = toeplitz(Ruu(N:N+k));
+theta = pinv(U'*U)*U'*Ryu(N:N+k);
 
 figure
 plot(1/Te*theta)
@@ -25,6 +25,7 @@ theta = pinv(Uk)*y/Te;
 plot(theta)
 legend('correlation','deconvolution')
 hold off
+
 %% spectral analyis
 u = FPdata.u;
 y = FPdata.y;
@@ -116,4 +117,3 @@ legend('spectral analysis', 'fourier analysis')
 hold off
 
 % we see 2 resonance frequencies at 14.1 rad/s and 26.6 rad/s
-
