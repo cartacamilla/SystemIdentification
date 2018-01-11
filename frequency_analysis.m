@@ -35,7 +35,7 @@ N = floor(length(u)/N_AVG);
 
 SCALEOPT = 'biased';
 %window = ones(N,1);
-window = hann_window(200);
+window = hann_window(250);
 padding = zeros(N - length(window), 1);
 window = [window; padding];
 
@@ -46,18 +46,14 @@ for i = 0:N_AVG-1
     yc = y(i*N + 1:(i+1)*N);
     uc = u(i*N + 1:(i+1)*N);
     rc = r(i*N + 1:(i+1)*N);
-
     % correlation
     Ryr = xcorr(yc,rc, SCALEOPT);
     Rur = xcorr(uc,rc, SCALEOPT);
-
     Ryr = Ryr(N:end);
     Rur = Rur(N:end);
-
     % windowing
     Ryr = Ryr .* window;
     Rur = Rur .* window;
-
     % averaging
     fft_Ryr = fft_Ryr+fft(Ryr);
     fft_Rur = fft_Rur+fft(Rur);

@@ -1,6 +1,3 @@
-FPdata = load('FPdata.mat');
-Te =  0.04;
-
 u = FPdata.u;
 y = FPdata.y;
 r = FPdata.r;
@@ -40,8 +37,7 @@ na = na_est
 nb = na; nk = 0;
 SYS = arx(data, [na nb nk]);
 figure;
-% plot B with a confidence interval of 2 sigma
-errorbar(SYS.b, SYS.db*2)
+errorbar(SYS.b, SYS.db*2) % plot B with a confidence interval of 2 sigma
 
 lower = SYS.b + 2 * SYS.db;
 higher = SYS.b - 2 * SYS.db;
@@ -82,16 +78,19 @@ nb = nb_est
 n = max(na, nb+nk)
 
 %% Validate order with ARMAX model by observing pole-zero-cancellation
-for n=4:8
+figure
+order=5:8;
+for n=order
     SYS = armax(data, [n n n 0]);
-    figure
+    subplot(2,2,n-min(order)+1);
     h = iopzplot(SYS);
     showConfidence(h, 2);
-    title('ARMAX n = '+string(n))
+    title('ARMAX n = '+string(n));
+    axis([-1.2 3 -2 2])
 end
-
+printpdf(gcf, 'final-report/images/3_zero_pole_cancel.pdf', 1.5, 1.8)
 %% compare with selstruc
-%NN = struc(5:7,5:7,0:2);
+%NN = struc(5:7,5:7,0:4);
 %V = arxstruc(estim_data, valid_data, NN);
 %order = selstruc(V)
 
