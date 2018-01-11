@@ -5,8 +5,9 @@ s = tf('s');
 k = 10;
 G = k * 1/s^2 * 1/(((s/w1)^2+1)*((s/w2)^2+1));
 %c2d(G, Te)
-freq = (0:N-1).*(omega_s/N);
+freq = (0:1450).*(omega_s/N);
 figure
+subplot(1,2,1)
 bode(spectral_analysis_model); hold on;
 bode(G, freq); hold off;
 %% ... model with lowpass instead of doule integrator
@@ -14,7 +15,8 @@ wc = 1.71;
 k = 3.16;
 G = k * 1/(s/wc + 1)^2 * 1/(((s/w1)^2+1)*((s/w2)^2+1));
 %c2d(G, Te)
-figure
+%figure
+subplot(1,2,2)
 bode(spectral_analysis_model)
 hold on;
 bode(G, freq)

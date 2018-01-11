@@ -95,7 +95,7 @@ for i = 1:6
     subplot(3,2,i)
     bode(models(i).sys); hold on;
     bode(spectral_analysis_model, freq); hold off;
-    legend(models(i).name, 'SA');
+    %legend(models(i).name, 'SA');
     title(models(i).name)
 end
 printpdf(gcf, 'final-report/images/4_freq_visual_comp.pdf', 1, 1.8)
